@@ -5,134 +5,113 @@ interface ShapePanelProps {
   onDragStart: (shape: DraggableShape) => void;
 }
 
-function ShapeIcon({ type, size = 32 }: { type: ShapeType; size?: number }) {
+function ShapeSVG({ type, size = 28 }: { type: ShapeType; size?: number }) {
   const s = size;
-  const half = s / 2;
+  const h = s / 2;
+  const sw = 1.5;
+
+  const props = {
+    width: s, height: s, viewBox: `0 0 ${s} ${s}`,
+    fill: 'none', stroke: 'currentColor', strokeWidth: sw,
+  };
 
   switch (type) {
     case 'circle':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <circle cx={half} cy={half} r={half - 2} fill="none" stroke="currentColor" strokeWidth="2" />
-        </svg>
-      );
+      return <svg {...props}><circle cx={h} cy={h} r={h - 3} /></svg>;
     case 'square':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <rect x="2" y="2" width={s - 4} height={s - 4} fill="none" stroke="currentColor" strokeWidth="2" rx="2" />
-        </svg>
-      );
+      return <svg {...props}><rect x="3" y="3" width={s - 6} height={s - 6} rx="1" /></svg>;
     case 'triangle':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <polygon points={`${half},3 ${s - 3},${s - 3} 3,${s - 3}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      );
+      return <svg {...props}><polygon points={`${h},3 ${s - 3},${s - 3} 3,${s - 3}`} strokeLinejoin="round" /></svg>;
     case 'hexagon':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <polygon
-            points={`${half},2 ${s - 4},${half * 0.5} ${s - 4},${s - half * 0.5} ${half},${s - 2} 4,${s - half * 0.5} 4,${half * 0.5}`}
-            fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"
-          />
-        </svg>
-      );
+      return <svg {...props}><polygon points={`${h},2 ${s - 4},${h * 0.45} ${s - 4},${s - h * 0.45} ${h},${s - 2} 4,${s - h * 0.45} 4,${h * 0.45}`} strokeLinejoin="round" /></svg>;
     case 'diamond':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <polygon points={`${half},2 ${s - 2},${half} ${half},${s - 2} 2,${half}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      );
-    case 'star':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <polygon
-            points={`${half},2 ${half + 4},${half - 4} ${s - 2},${half - 2} ${half + 5},${half + 2} ${s - 5},${s - 3} ${half},${half + 5} 5,${s - 3} ${half - 5},${half + 2} 2,${half - 2} ${half - 4},${half - 4}`}
-            fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"
-          />
-        </svg>
-      );
-    case 'pentagon':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <polygon
-            points={`${half},2 ${s - 2},${half * 0.7} ${s - 5},${s - 3} 5,${s - 3} 2,${half * 0.7}`}
-            fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"
-          />
-        </svg>
-      );
-    case 'octagon':
-      return (
-        <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-          <polygon
-            points={`${half * 0.6},2 ${s - half * 0.6},2 ${s - 2},${half * 0.6} ${s - 2},${s - half * 0.6} ${s - half * 0.6},${s - 2} ${half * 0.6},${s - 2} 2,${s - half * 0.6} 2,${half * 0.6}`}
-            fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"
-          />
-        </svg>
-      );
-    default:
-      return null;
+      return <svg {...props}><polygon points={`${h},2 ${s - 2},${h} ${h},${s - 2} 2,${h}`} strokeLinejoin="round" /></svg>;
+    case 'star': {
+      const pts = [];
+      for (let i = 0; i < 5; i++) {
+        const outerAngle = (i * 72 - 90) * (Math.PI / 180);
+        const innerAngle = ((i * 72) + 36 - 90) * (Math.PI / 180);
+        pts.push(`${h + (h - 2) * Math.cos(outerAngle)},${h + (h - 2) * Math.sin(outerAngle)}`);
+        pts.push(`${h + (h * 0.45) * Math.cos(innerAngle)},${h + (h * 0.45) * Math.sin(innerAngle)}`);
+      }
+      return <svg {...props}><polygon points={pts.join(' ')} strokeLinejoin="round" /></svg>;
+    }
+    case 'pentagon': {
+      const pts = [];
+      for (let i = 0; i < 5; i++) {
+        const angle = (i * 72 - 90) * (Math.PI / 180);
+        pts.push(`${h + (h - 2) * Math.cos(angle)},${h + (h - 2) * Math.sin(angle)}`);
+      }
+      return <svg {...props}><polygon points={pts.join(' ')} strokeLinejoin="round" /></svg>;
+    }
+    case 'octagon': {
+      const pts = [];
+      for (let i = 0; i < 8; i++) {
+        const angle = (i * 45 - 90) * (Math.PI / 180);
+        pts.push(`${h + (h - 2) * Math.cos(angle)},${h + (h - 2) * Math.sin(angle)}`);
+      }
+      return <svg {...props}><polygon points={pts.join(' ')} strokeLinejoin="round" /></svg>;
+    }
   }
 }
 
-export { ShapeIcon };
+export { ShapeSVG };
 
 export default function ShapePanel({ shapes, onDragStart }: ShapePanelProps) {
   return (
-    <div className="w-56 bg-black border-r border-gray-800 flex flex-col h-full shrink-0">
+    <div className="w-48 bg-black border-r border-[#1a1a1a] flex flex-col h-full shrink-0">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-gray-800">
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Figuras</h2>
-        <p className="text-[10px] text-gray-600 mt-1">Arrastra al canvas</p>
+      <div className="px-3 py-3 border-b border-[#1a1a1a]">
+        <div className="flex items-center gap-2">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="text-white/30">
+            <rect x="1" y="1" width="4" height="4" stroke="currentColor" strokeWidth="1" />
+            <circle cx="9" cy="3" r="2" stroke="currentColor" strokeWidth="1" />
+            <polygon points="3,11 1,8 5,8" stroke="currentColor" strokeWidth="1" fill="none" />
+          </svg>
+          <span className="text-[11px] text-white/50 font-medium">Shapes</span>
+        </div>
+        <p className="text-[9px] text-white/20 mt-1 font-mono">drag to canvas</p>
       </div>
 
-      {/* Shapes Grid */}
-      <div className="flex-1 overflow-y-auto p-3">
-        <div className="grid grid-cols-2 gap-2">
+      {/* Grid */}
+      <div className="flex-1 overflow-y-auto p-2">
+        <div className="grid grid-cols-2 gap-1.5">
           {shapes.map((shape) => (
             <div
               key={shape.id}
               draggable
               onDragStart={(e) => {
                 e.dataTransfer.setData('application/json', JSON.stringify(shape));
+                e.dataTransfer.effectAllowed = 'move';
                 onDragStart(shape);
               }}
-              className="group relative bg-gray-950 border border-gray-800 rounded-xl p-3 flex flex-col items-center gap-2 cursor-grab active:cursor-grabbing hover:border-gray-600 hover:bg-gray-900 transition-all duration-200"
-              title={shape.description}
+              className="group relative aspect-square bg-[#0a0a0a] border border-[#1a1a1a] rounded-md flex flex-col items-center justify-center gap-1.5 cursor-grab active:cursor-grabbing hover:border-white/20 hover:bg-[#111] transition-all duration-150"
             >
-              <div className="text-gray-400 group-hover:text-gray-200 transition-colors">
-                <ShapeIcon type={shape.type} size={36} />
+              <div className="text-white/30 group-hover:text-white/70 transition-colors duration-150">
+                <ShapeSVG type={shape.type} size={24} />
               </div>
-              <span className="text-[10px] text-gray-500 group-hover:text-gray-300 font-medium text-center leading-tight transition-colors">
+              <span className="text-[8px] text-white/20 group-hover:text-white/50 font-mono transition-colors">
                 {shape.label}
               </span>
-              {/* Drag indicator */}
+              {/* Corner indicator */}
               <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg width="10" height="10" viewBox="0 0 10 10" className="text-gray-600">
-                  <circle cx="3" cy="3" r="1" fill="currentColor" />
-                  <circle cx="7" cy="3" r="1" fill="currentColor" />
-                  <circle cx="3" cy="7" r="1" fill="currentColor" />
-                  <circle cx="7" cy="7" r="1" fill="currentColor" />
+                <svg width="6" height="6" viewBox="0 0 6 6" className="text-white/20">
+                  <circle cx="1.5" cy="1.5" r="0.7" fill="currentColor" />
+                  <circle cx="4.5" cy="1.5" r="0.7" fill="currentColor" />
+                  <circle cx="1.5" cy="4.5" r="0.7" fill="currentColor" />
+                  <circle cx="4.5" cy="4.5" r="0.7" fill="currentColor" />
                 </svg>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Instructions */}
-        <div className="mt-4 p-3 bg-gray-950 border border-gray-800 rounded-lg">
-          <p className="text-[10px] text-gray-600 leading-relaxed">
-            <span className="text-gray-400 font-medium">Tip:</span> Arrastra las figuras al mapa para marcar zonas. Puedes vincularlas a nodos financieros y añadir notas.
-          </p>
-        </div>
       </div>
 
-      {/* Footer */}
-      <div className="px-4 py-3 border-t border-gray-800">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-gray-600" />
-          <span className="text-[10px] text-gray-600">8 figuras disponibles</span>
-        </div>
+      {/* Footer hint */}
+      <div className="px-3 py-2 border-t border-[#1a1a1a]">
+        <p className="text-[8px] text-white/15 font-mono leading-relaxed">
+          drop on canvas to place<br/>drag nodes to reposition
+        </p>
       </div>
     </div>
   );

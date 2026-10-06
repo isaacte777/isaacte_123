@@ -10,7 +10,7 @@ export interface Transaction {
 export interface Category {
   id: string;
   name: string;
-  icon: string;
+  symbol: string;
 }
 
 export type ShapeType = 'circle' | 'square' | 'triangle' | 'hexagon' | 'diamond' | 'star' | 'pentagon' | 'octagon';
@@ -19,7 +19,6 @@ export interface DraggableShape {
   id: string;
   type: ShapeType;
   label: string;
-  description: string;
 }
 
 export interface PlacedShape {
@@ -29,13 +28,12 @@ export interface PlacedShape {
   x: number;
   y: number;
   linkedNode: string | null;
-  note: string;
 }
 
 export interface MapNode {
   id: string;
   name: string;
-  icon: string;
+  symbol: string;
   x: number;
   y: number;
   total: number;
