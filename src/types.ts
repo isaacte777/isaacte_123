@@ -11,7 +11,25 @@ export interface Category {
   id: string;
   name: string;
   icon: string;
-  color: string;
+}
+
+export type ShapeType = 'circle' | 'square' | 'triangle' | 'hexagon' | 'diamond' | 'star' | 'pentagon' | 'octagon';
+
+export interface DraggableShape {
+  id: string;
+  type: ShapeType;
+  label: string;
+  description: string;
+}
+
+export interface PlacedShape {
+  id: string;
+  type: ShapeType;
+  label: string;
+  x: number;
+  y: number;
+  linkedNode: string | null;
+  note: string;
 }
 
 export interface MapNode {
